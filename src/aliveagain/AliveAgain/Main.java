@@ -11,6 +11,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -29,12 +30,15 @@ public class Main extends Application {
 //    int cambioEjeX = 0;
 //    int cambioEjeY = 0;
       double fondoCityY = 0;
-      int imagenViewWallA = 0;
-      int imagenViewWallA2 = -610;
+      int imagenViewWallA = 10;
+      int imagenViewWallA2 = -600;
+      int groupMuñecoX = 362;
+      int groupMuñecoY = 0;
+      int velocidad = 0;
     
     @Override
     public void start(Stage primaryStage) {
-        Circle circleCabeza = new Circle(150,125,25);        
+        Circle circleCabeza = new Circle(150,125,25,Color.DARKORANGE);        
         Circle circleOjoIzquierdo = new Circle(137.5,112.5,3,Color.RED);
         Circle circleOjoDerecho = new Circle(162.5,112.5,3,Color.RED);
         Arc arcPañuelo = new Arc(150, 125, 25, 25, 180, 180);
@@ -55,14 +59,17 @@ public class Main extends Application {
         imagenViewCity.setY(0);
         imagenViewCity.setFitWidth(1024);
         imagenViewCity.setFitHeight(2400);
-        imagenViewWallA_izquierda.setX(15);
+        imagenViewWallA_izquierda.setX(0);
         imagenViewWallA_izquierda.setY(0);
-        imagenViewWallA_derecha.setX(800);
+        imagenViewWallA_derecha.setX(824);
         imagenViewWallA_derecha.setY(0);
         imagenViewWallA_izquierda2.setX(0);
         imagenViewWallA_izquierda2.setY(0);
         imagenViewWallA_derecha2.setX(824);
         imagenViewWallA_derecha2.setY(0);
+        groupMuñeco.setLayoutX(groupMuñecoX);
+        groupMuñeco.setLayoutY(groupMuñecoY);
+        
                 
         AnimationTimer animationCity = new AnimationTimer (){
             
@@ -70,17 +77,26 @@ public class Main extends Application {
             public void handle (long now) {
                 if (fondoCityY>-1440){
                     imagenViewCity.setY(fondoCityY);
-                    fondoCityY = fondoCityY - 0.2;
+                    fondoCityY = fondoCityY - 0.5;
                 };
             };
         };
                 
+        AnimationTimer animationMuñeco = new AnimationTimer (){
+            
+            @Override
+            public void handle (long now) {
+                groupMuñecoX = velocidad + groupMuñecoX;
+                groupMuñeco.setLayoutX(groupMuñecoX);
+            };
+        };
+        
         AnimationTimer animationWall = new AnimationTimer (){
             
             @Override
             public void handle (long now) {
                 if (imagenViewWallA_izquierda.getY()<-599){
-                    imagenViewWallA = 600;
+                    imagenViewWallA = 610;
                     imagenViewWallA_izquierda.setY(imagenViewWallA);
                     imagenViewWallA_derecha.setY(imagenViewWallA);                    
                 }
@@ -90,7 +106,7 @@ public class Main extends Application {
                     imagenViewWallA_derecha.setY(imagenViewWallA);
                 };
                 if (imagenViewWallA_izquierda2.getY()<-599){
-                    imagenViewWallA2 = 600;
+                    imagenViewWallA2 = 610;
                     imagenViewWallA_izquierda2.setY(imagenViewWallA2);
                     imagenViewWallA_derecha2.setY(imagenViewWallA2); 
                 }
@@ -100,7 +116,7 @@ public class Main extends Application {
                     imagenViewWallA_derecha2.setY(imagenViewWallA2);
                 };
             };
-        };
+        };        
 //      AnimationTimer animationMuñeco = new AnimationTimer (){
 //            
 //            @Override
@@ -137,13 +153,30 @@ public class Main extends Application {
 //        };
             
         Pane root = new Pane();
-            root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2);
+            root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2, groupMuñeco);
 //          root.getChildren().add(groupMuñeco);
         
 //      animationMuñeco.start();
         animationWall.start();
         animationCity.start();
-        Scene scene = new Scene(root, 1024, 600);
+        animationMuñeco.start();
+        Scene scene = new Scene(root, 1024, 600); 
+        scene.setOnKeyReleased((KeyEvent teclasoltada) -> {
+            velocidad = 0;            
+        });
+        scene.setOnKeyPressed((KeyEvent teclapulsada) -> {
+            
+            switch(teclapulsada.getCode()) {
+                
+                case LEFT:
+                        velocidad = -5;
+                    break;
+                case RIGHT:
+                        velocidad = 5;                    
+                    break;
+            }
+        });
+        
         primaryStage.setTitle("Alive Again");
         primaryStage.setScene(scene);
         primaryStage.show();
