@@ -5,6 +5,8 @@
  */
 package aliveagain.AliveAgain;
 
+import java.util.Random;
+import java.util.Set;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -14,8 +16,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 /**
@@ -32,21 +35,65 @@ public class Main extends Application {
       double fondoCityY = 0;
       int imagenViewWallA = 10;
       int imagenViewWallA2 = -600;
-      int groupMuñecoX = 362;
-      int groupMuñecoY = 0;
+      int groupMuñecoX = 512;
+      int groupMuñecoY = 100;
       int velocidad = 0;
+      int groupFantasmaX = 500;
+      float groupFantasmaY = 700;
     
     @Override
     public void start(Stage primaryStage) {
-        Circle circleCabeza = new Circle(150,125,25,Color.DARKORANGE);        
-        Circle circleOjoIzquierdo = new Circle(137.5,112.5,3,Color.RED);
-        Circle circleOjoDerecho = new Circle(162.5,112.5,3,Color.RED);
-        Arc arcPañuelo = new Arc(150, 125, 25, 25, 180, 180);
-        arcPañuelo.setFill(Color.BLUEVIOLET);
+        Image imagenBoy = new Image(getClass().getResourceAsStream("Imagen/boy.png"));
+        ImageView imagenViewBoy = new ImageView(imagenBoy);
+        Rectangle rectangleBoy = new Rectangle (32, 111);
+        rectangleBoy.setVisible(false);
+        Circle circleFantasmaD = new Circle(22, 15, 6, Color.RED);
+        Circle circleFantasmaI = new Circle(5, 15, 2, Color.RED);
+        Circle circleFantasma = new Circle(15, 15, 15, Color.DARKGRAY);
+        Rectangle rectangleFantasma = new Rectangle (0,15,30,15);
+        rectangleFantasma.setFill(Color.DARKGRAY);
+        Polygon polygon1Fantasma = new Polygon (new double[]{
+            0, 30,
+            0, 35,
+            5, 30
+        });
+        Polygon polygon2Fantasma = new Polygon (new double[]{
+            5, 30,
+            7, 37,
+            9, 30
+        });
+        Polygon polygon3Fantasma = new Polygon (new double[]{
+            9, 30,
+            13, 36,
+            15, 30
+        });
+        Polygon polygon4Fantasma = new Polygon (new double[]{
+            15, 30,
+            18, 35,
+            22, 30
+        });
+        Polygon polygon5Fantasma = new Polygon (new double[]{
+            22, 30,
+            25, 39,
+            27, 30
+        });
+        Polygon polygon6Fantasma = new Polygon (new double[]{
+            27, 30,
+            30, 36,
+            30, 30
+        });
+        polygon1Fantasma.setFill(Color.DARKGRAY);
+        polygon2Fantasma.setFill(Color.DARKGRAY);
+        polygon3Fantasma.setFill(Color.DARKGRAY);
+        polygon4Fantasma.setFill(Color.DARKGRAY);
+        polygon5Fantasma.setFill(Color.DARKGRAY);
+        polygon6Fantasma.setFill(Color.DARKGRAY);
+        Group groupFantasma = new Group ();
+            groupFantasma.getChildren().addAll( rectangleFantasma, circleFantasma, circleFantasmaD, circleFantasmaI, polygon1Fantasma, polygon2Fantasma, polygon3Fantasma, polygon4Fantasma, polygon5Fantasma, polygon6Fantasma);
         
         Group groupMuñeco = new Group ();
-            groupMuñeco.getChildren().addAll(circleCabeza, circleOjoIzquierdo, circleOjoDerecho, arcPañuelo);
-        
+            groupMuñeco.getChildren().addAll(rectangleBoy, imagenViewBoy);
+         
         Image imagenWallA = new Image(getClass().getResourceAsStream("Imagen/wall_A.jpg"));
         // Image imagenWallB = new Image(getClass().getResourceAsStream("Imagen/wall_B.jpg"));
         Image imagenCity = new Image(getClass().getResourceAsStream("Imagen/city.jpg"));
@@ -67,13 +114,28 @@ public class Main extends Application {
         imagenViewWallA_izquierda2.setY(0);
         imagenViewWallA_derecha2.setX(824);
         imagenViewWallA_derecha2.setY(0);
+        groupFantasma.setLayoutX(groupFantasmaX);
+        groupFantasma.setLayoutY(groupFantasmaY);
         groupMuñeco.setLayoutX(groupMuñecoX);
         groupMuñeco.setLayoutY(groupMuñecoY);
+        Random randomEnemigosFantasma = new Random();
+        groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma.setLayoutX(groupFantasmaX);
+        System.out.println(groupFantasmaX);
         
-                
+        AnimationTimer animationFantasma = new AnimationTimer (){
+            
+            @Override
+            public void handle (long now) {
+                groupFantasmaY-- ;
+                groupFantasma.setLayoutY(groupFantasmaY);
+            };
+        };
+    
         AnimationTimer animationCity = new AnimationTimer (){
             
             @Override
+            @SuppressWarnings("empty-statement")
             public void handle (long now) {
                 if (fondoCityY>-1440){
                     imagenViewCity.setY(fondoCityY);
@@ -81,7 +143,7 @@ public class Main extends Application {
                 };
             };
         };
-                
+        
         AnimationTimer animationMuñeco = new AnimationTimer (){
             
             @Override
@@ -153,13 +215,14 @@ public class Main extends Application {
 //        };
             
         Pane root = new Pane();
-            root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2, groupMuñeco);
+            root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2, groupMuñeco, groupFantasma);
 //          root.getChildren().add(groupMuñeco);
         
 //      animationMuñeco.start();
         animationWall.start();
         animationCity.start();
         animationMuñeco.start();
+        animationFantasma.start();
         Scene scene = new Scene(root, 1024, 600); 
         scene.setOnKeyReleased((KeyEvent teclasoltada) -> {
             velocidad = 0;            
