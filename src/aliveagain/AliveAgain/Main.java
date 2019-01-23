@@ -6,7 +6,6 @@
 package aliveagain.AliveAgain;
 
 import java.util.Random;
-import java.util.Set;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -19,6 +18,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 /**
@@ -32,17 +34,22 @@ public class Main extends Application {
 //    int movimientoMuñecoY = 0;
 //    int cambioEjeX = 0;
 //    int cambioEjeY = 0;
-      double fondoCityY = 0;
-      int imagenViewWallA = 10;
-      int imagenViewWallA2 = -600;
-      int groupMuñecoX = 512;
-      int groupMuñecoY = 100;
-      int velocidad = 0;
-      int groupFantasmaX = 500;
-      float groupFantasmaY = 700;
+        int imagenViewWallA = 10;
+        int imagenViewWallA2 = -600;
+        int groupMuñecoX = 512;
+        int velocidad = 0;
+        float velocidadCity = 0;
+        double fondoCityY = 0;
+        float groupCityX = 0;
+      
+        int groupFantasmaX = 500;
+        float groupFantasmaY = 700;
+        int groupMuñecoY = 100;
     
     @Override
     public void start(Stage primaryStage) {
+        Rectangle rectangleDerecha = new Rectangle (200, 600);
+        Rectangle rectangleIzquierda = new Rectangle (824, 0, 200, 600);
         Image imagenBoy = new Image(getClass().getResourceAsStream("Imagen/boy.png"));
         ImageView imagenViewBoy = new ImageView(imagenBoy);
         Rectangle rectangleBoy = new Rectangle (32, 111);
@@ -124,14 +131,14 @@ public class Main extends Application {
         System.out.println(groupFantasmaX);
         
         AnimationTimer animationFantasma = new AnimationTimer (){
-            
+        
             @Override
             public void handle (long now) {
-                groupFantasmaY-- ;
+                groupFantasmaY--;
                 groupFantasma.setLayoutY(groupFantasmaY);
             };
         };
-    
+        
         AnimationTimer animationCity = new AnimationTimer (){
             
             @Override
@@ -150,6 +157,9 @@ public class Main extends Application {
             public void handle (long now) {
                 groupMuñecoX = velocidad + groupMuñecoX;
                 groupMuñeco.setLayoutX(groupMuñecoX);
+                velocidadCity = velocidad/3;      
+                groupCityX = velocidadCity + groupCityX;             
+                imagenViewCity.setX(groupCityX);
             };
         };
         
@@ -179,6 +189,14 @@ public class Main extends Application {
                 };
             };
         };        
+        
+        Text derrota = new Text ("Has perdido");
+        derrota.setFont(Font.font(150));
+        derrota.setX(50);
+        derrota.setY(200);
+        derrota.setFill(Color.ORANGE);
+        
+        
 //      AnimationTimer animationMuñeco = new AnimationTimer (){
 //            
 //            @Override
@@ -217,8 +235,28 @@ public class Main extends Application {
         Pane root = new Pane();
             root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2, groupMuñeco, groupFantasma);
 //          root.getChildren().add(groupMuñeco);
-        
+        AnimationTimer animationChoque = new AnimationTimer (){
+            
+            @Override
+            public void handle (long now) {                
+                Shape shapeCollisionA = Shape.intersect(rectangleBoy, rectangleDerecha);
+                boolean colisionShapeA = shapeCollisionA.getBoundsInLocal().isEmpty();
+                if (colisionShapeA == false){
+                   root.getChildren().add(derrota);
+                   this.stop();
+                };
+                          
+                Shape shapeCollisionB = Shape.intersect(rectangleBoy, rectangleIzquierda);
+                boolean colisionShapeB = shapeCollisionB.getBoundsInLocal().isEmpty();
+                if (colisionShapeB == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                };
+                
+            };
+        };
 //      animationMuñeco.start();
+        animationChoque.start();
         animationWall.start();
         animationCity.start();
         animationMuñeco.start();
@@ -250,6 +288,16 @@ public class Main extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+    public void reinicio (){
+        imagenViewWallA = 10;
+        imagenViewWallA2 = -600;
+        groupMuñecoX = 512;
+        velocidad = 0;
+        velocidadCity = 0;
+        fondoCityY = 0;
+        groupCityX = 0;
     }
     
 }
