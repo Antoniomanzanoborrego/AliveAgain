@@ -50,7 +50,7 @@ public class Main extends Application {
         float groupFantasmaY7 = 3700;
         float groupFantasmaY8 = 4200;
         int groupMuñecoY = 100;
-        float dificultad = 8;
+        float dificultad = 3;
     
     @Override
     public void start(Stage primaryStage) {
@@ -244,6 +244,16 @@ public class Main extends Application {
             };
         };        
         
+        AnimationTimer animationDificultad = new AnimationTimer (){
+            
+            @Override
+            public void handle (long now) {
+                if (dificultad<12){
+                    dificultad = (float) (dificultad + 0.005);
+                }
+            };
+        };
+        
         Text derrota = new Text ("Has perdido");
         derrota.setFont(Font.font(150));
         derrota.setX(50);
@@ -293,23 +303,89 @@ public class Main extends Application {
             
             @Override
             public void handle (long now) {                
-                Shape shapeCollisionA = Shape.intersect(rectangleBoy, rectangleDerecha);
-                boolean colisionShapeA = shapeCollisionA.getBoundsInLocal().isEmpty();
-                if (colisionShapeA == false){
+                Shape shapeCollision1 = Shape.intersect(rectangleBoy, rectangleDerecha);
+                boolean colisionShape1 = shapeCollision1.getBoundsInLocal().isEmpty();
+                if (colisionShape1 == false){
                    root.getChildren().add(derrota);
                    this.stop();
+                    animationMuñeco.stop();
                 };
                           
-                Shape shapeCollisionB = Shape.intersect(rectangleBoy, rectangleIzquierda);
-                boolean colisionShapeB = shapeCollisionB.getBoundsInLocal().isEmpty();
-                if (colisionShapeB == false){
+                Shape shapeCollision2 = Shape.intersect(rectangleBoy, rectangleIzquierda);
+                boolean colisionShape2 = shapeCollision2.getBoundsInLocal().isEmpty();
+                if (colisionShape2 == false){
                     root.getChildren().add(derrota);
                     this.stop();
+                    animationMuñeco.stop();
+                };
+                         
+                Shape shapeCollision3 = Shape.intersect(rectangleBoy, fantasma1.circleFantasma);
+                boolean colisionShape3 = shapeCollision3.getBoundsInLocal().isEmpty();
+                if (colisionShape3 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };    
+                
+                Shape shapeCollision4 = Shape.intersect(rectangleBoy, fantasma2.circleFantasma);
+                boolean colisionShape4 = shapeCollision4.getBoundsInLocal().isEmpty();
+                if (colisionShape4 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
                 };
                 
+                Shape shapeCollision5 = Shape.intersect(rectangleBoy, fantasma3.circleFantasma);
+                boolean colisionShape5 = shapeCollision5.getBoundsInLocal().isEmpty();
+                if (colisionShape5 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };
+                
+                Shape shapeCollision6 = Shape.intersect(rectangleBoy, fantasma4.circleFantasma);
+                boolean colisionShape6 = shapeCollision6.getBoundsInLocal().isEmpty();
+                if (colisionShape6 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };
+                
+                Shape shapeCollision7 = Shape.intersect(rectangleBoy, fantasma5.circleFantasma);
+                boolean colisionShape7 = shapeCollision7.getBoundsInLocal().isEmpty();
+                if (colisionShape7 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };
+                
+                Shape shapeCollision8 = Shape.intersect(rectangleBoy, fantasma6.circleFantasma);
+                boolean colisionShape8 = shapeCollision8.getBoundsInLocal().isEmpty();
+                if (colisionShape8 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };
+                
+                Shape shapeCollision9 = Shape.intersect(rectangleBoy, fantasma7.circleFantasma);
+                boolean colisionShape9 = shapeCollision9.getBoundsInLocal().isEmpty();
+                if (colisionShape9 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };
+                
+                Shape shapeCollision10 = Shape.intersect(rectangleBoy, fantasma8.circleFantasma);
+                boolean colisionShape10 = shapeCollision10.getBoundsInLocal().isEmpty();
+                if (colisionShape10 == false){
+                    root.getChildren().add(derrota);
+                    this.stop();
+                    animationMuñeco.stop();
+                };
             };
         };
-//      animationMuñeco.start();
+        
+        animationDificultad.start();
         animationChoque.start();
         animationWall.start();
         animationCity.start();
