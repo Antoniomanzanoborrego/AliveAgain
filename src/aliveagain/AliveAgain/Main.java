@@ -40,63 +40,35 @@ public class Main extends Application {
         int velocidad = 0;
         float velocidadCity = 0;
         double fondoCityY = 0;
-        float groupCityX = 0;
-      
-        int groupFantasmaX = 500;
-        float groupFantasmaY = 700;
+        float groupCityX = 0;      
+        float groupFantasmaY1 = 700;
+        float groupFantasmaY2 = 1200;
+        float groupFantasmaY3 = 1700;
+        float groupFantasmaY4 = 2200;
+        float groupFantasmaY5 = 2700;
+        float groupFantasmaY6 = 3200;
+        float groupFantasmaY7 = 3700;
+        float groupFantasmaY8 = 4200;
         int groupMuñecoY = 100;
+        float dificultad = 8;
     
     @Override
     public void start(Stage primaryStage) {
+        
+        int groupFantasmaX1;
+        int groupFantasmaX2;
+        int groupFantasmaX3;
+        int groupFantasmaX4;
+        int groupFantasmaX5;
+        int groupFantasmaX6;
+        int groupFantasmaX7;
+        int groupFantasmaX8;
         Rectangle rectangleDerecha = new Rectangle (200, 600);
         Rectangle rectangleIzquierda = new Rectangle (824, 0, 200, 600);
         Image imagenBoy = new Image(getClass().getResourceAsStream("Imagen/boy.png"));
         ImageView imagenViewBoy = new ImageView(imagenBoy);
         Rectangle rectangleBoy = new Rectangle (32, 111);
         rectangleBoy.setVisible(false);
-        Circle circleFantasmaD = new Circle(22, 15, 6, Color.RED);
-        Circle circleFantasmaI = new Circle(5, 15, 2, Color.RED);
-        Circle circleFantasma = new Circle(15, 15, 15, Color.DARKGRAY);
-        Rectangle rectangleFantasma = new Rectangle (0,15,30,15);
-        rectangleFantasma.setFill(Color.DARKGRAY);
-        Polygon polygon1Fantasma = new Polygon (new double[]{
-            0, 30,
-            0, 35,
-            5, 30
-        });
-        Polygon polygon2Fantasma = new Polygon (new double[]{
-            5, 30,
-            7, 37,
-            9, 30
-        });
-        Polygon polygon3Fantasma = new Polygon (new double[]{
-            9, 30,
-            13, 36,
-            15, 30
-        });
-        Polygon polygon4Fantasma = new Polygon (new double[]{
-            15, 30,
-            18, 35,
-            22, 30
-        });
-        Polygon polygon5Fantasma = new Polygon (new double[]{
-            22, 30,
-            25, 39,
-            27, 30
-        });
-        Polygon polygon6Fantasma = new Polygon (new double[]{
-            27, 30,
-            30, 36,
-            30, 30
-        });
-        polygon1Fantasma.setFill(Color.DARKGRAY);
-        polygon2Fantasma.setFill(Color.DARKGRAY);
-        polygon3Fantasma.setFill(Color.DARKGRAY);
-        polygon4Fantasma.setFill(Color.DARKGRAY);
-        polygon5Fantasma.setFill(Color.DARKGRAY);
-        polygon6Fantasma.setFill(Color.DARKGRAY);
-        Group groupFantasma = new Group ();
-            groupFantasma.getChildren().addAll( rectangleFantasma, circleFantasma, circleFantasmaD, circleFantasmaI, polygon1Fantasma, polygon2Fantasma, polygon3Fantasma, polygon4Fantasma, polygon5Fantasma, polygon6Fantasma);
         
         Group groupMuñeco = new Group ();
             groupMuñeco.getChildren().addAll(rectangleBoy, imagenViewBoy);
@@ -121,21 +93,103 @@ public class Main extends Application {
         imagenViewWallA_izquierda2.setY(0);
         imagenViewWallA_derecha2.setX(824);
         imagenViewWallA_derecha2.setY(0);
-        groupFantasma.setLayoutX(groupFantasmaX);
-        groupFantasma.setLayoutY(groupFantasmaY);
         groupMuñeco.setLayoutX(groupMuñecoX);
         groupMuñeco.setLayoutY(groupMuñecoY);
-        Random randomEnemigosFantasma = new Random();
-        groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
-        groupFantasma.setLayoutX(groupFantasmaX);
-        System.out.println(groupFantasmaX);
+        Random randomEnemigosFantasma = new Random();            
+        Fantasma fantasma1 = new Fantasma ();                 
+        Fantasma fantasma2 = new Fantasma ();                 
+        Fantasma fantasma3 = new Fantasma ();                 
+        Fantasma fantasma4 = new Fantasma ();                 
+        Fantasma fantasma5 = new Fantasma ();                 
+        Fantasma fantasma6 = new Fantasma ();                 
+        Fantasma fantasma7 = new Fantasma ();                 
+        Fantasma fantasma8 = new Fantasma ();         
+        Group groupFantasma1 = new Group ();
+            groupFantasma1.getChildren().addAll(fantasma1);
+        Group groupFantasma2 = new Group ();
+            groupFantasma2.getChildren().addAll(fantasma2);
+        Group groupFantasma3 = new Group ();
+            groupFantasma3.getChildren().addAll(fantasma3);
+        Group groupFantasma4 = new Group ();
+            groupFantasma4.getChildren().addAll(fantasma4);
+        Group groupFantasma5 = new Group ();
+            groupFantasma5.getChildren().addAll(fantasma5);
+        Group groupFantasma6 = new Group ();
+            groupFantasma6.getChildren().addAll(fantasma6);
+        Group groupFantasma7 = new Group ();
+            groupFantasma7.getChildren().addAll(fantasma7);
+        Group groupFantasma8 = new Group ();
+            groupFantasma8.getChildren().addAll(fantasma8);
+        groupFantasma1.setLayoutY(groupFantasmaY1);
+        groupFantasmaX1 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma1.setLayoutX(groupFantasmaX1);
+        groupFantasma2.setLayoutY(groupFantasmaY2);
+        groupFantasmaX2 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma2.setLayoutX(groupFantasmaX2);
+        groupFantasma3.setLayoutY(groupFantasmaY3);
+        groupFantasmaX3 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma3.setLayoutX(groupFantasmaX3);
+        groupFantasma4.setLayoutY(groupFantasmaY4);
+        groupFantasmaX4 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma4.setLayoutX(groupFantasmaX4);
+        groupFantasma5.setLayoutY(groupFantasmaY5);
+        groupFantasmaX5 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma5.setLayoutX(groupFantasmaX5);
+        groupFantasma6.setLayoutY(groupFantasmaY6);
+        groupFantasmaX6 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma6.setLayoutX(groupFantasmaX6);
+        groupFantasma7.setLayoutY(groupFantasmaY7);
+        groupFantasmaX7 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma7.setLayoutX(groupFantasmaX7);
+        groupFantasma8.setLayoutY(groupFantasmaY8);
+        groupFantasmaX8 = randomEnemigosFantasma.nextInt(594) + 200;
+        groupFantasma8.setLayoutX(groupFantasmaX8);
         
+                
         AnimationTimer animationFantasma = new AnimationTimer (){
         
             @Override
             public void handle (long now) {
-                groupFantasmaY--;
-                groupFantasma.setLayoutY(groupFantasmaY);
+                groupFantasmaY1 = groupFantasmaY1 - dificultad;
+                groupFantasma1.setLayoutY(groupFantasmaY1);
+                groupFantasmaY2 = groupFantasmaY2 - dificultad;
+                groupFantasma2.setLayoutY(groupFantasmaY2);
+                groupFantasmaY3 = groupFantasmaY3 - dificultad;
+                groupFantasma3.setLayoutY(groupFantasmaY3);
+                groupFantasmaY4 = groupFantasmaY4 - dificultad;
+                groupFantasma4.setLayoutY(groupFantasmaY4);
+                groupFantasmaY5 = groupFantasmaY5 - dificultad;
+                groupFantasma5.setLayoutY(groupFantasmaY5);
+                groupFantasmaY6 = groupFantasmaY6 - dificultad;
+                groupFantasma6.setLayoutY(groupFantasmaY6);
+                groupFantasmaY7 = groupFantasmaY7 - dificultad;
+                groupFantasma7.setLayoutY(groupFantasmaY7);
+                groupFantasmaY8 = groupFantasmaY8 - dificultad;
+                groupFantasma8.setLayoutY(groupFantasmaY8);
+                if (groupFantasmaY1<-30) {
+                    groupFantasmaY1 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY2<-30) {
+                    groupFantasmaY2 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY3<-30) {
+                    groupFantasmaY3 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY4<-30) {
+                    groupFantasmaY4 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY5<-30) {
+                    groupFantasmaY5 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY6<-30) {
+                    groupFantasmaY6 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY7<-30) {
+                    groupFantasmaY7 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
+                if (groupFantasmaY8<-30) {
+                    groupFantasmaY8 = randomEnemigosFantasma.nextInt(400) + 1000;
+                }
             };
         };
         
@@ -233,7 +287,7 @@ public class Main extends Application {
 //        };
             
         Pane root = new Pane();
-            root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2, groupMuñeco, groupFantasma);
+            root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, imagenViewWallA_izquierda, imagenViewWallA_derecha2, imagenViewWallA_izquierda2, groupMuñeco, groupFantasma1, groupFantasma2, groupFantasma3, groupFantasma4, groupFantasma5, groupFantasma6, groupFantasma7, groupFantasma8);
 //          root.getChildren().add(groupMuñeco);
         AnimationTimer animationChoque = new AnimationTimer (){
             
@@ -298,6 +352,14 @@ public class Main extends Application {
         velocidadCity = 0;
         fondoCityY = 0;
         groupCityX = 0;
+        groupMuñecoY = 100;
+        groupFantasmaY1 = 700;
+        groupFantasmaY2 = 1200;
+        groupFantasmaY3 = 1700;
+        groupFantasmaY4 = 2200;
+        groupFantasmaY5 = 2700;
+        groupFantasmaY6 = 3200;
+        groupFantasmaY7 = 3700;
+        groupFantasmaY8 = 4200;
     }
-    
 }
