@@ -18,6 +18,8 @@ import javafx.scene.shape.Rectangle;
  */
 public class Fantasma extends Group {
     
+    int groupFantasmaX = 0;
+    float groupFantasmaY = 0;
     Circle circleFantasmaD = new Circle(22, 15, 6, Color.RED);
     Circle circleFantasmaI = new Circle(5, 15, 2, Color.RED);
     Circle circleFantasma = new Circle(15, 15, 15, Color.DARKGRAY);
@@ -52,6 +54,7 @@ public class Fantasma extends Group {
         30, 36,
         30, 30
     });
+    Group groupFantasma = new Group ();
         
     public Fantasma() {
         polygon1Fantasma.setFill(Color.DARKGRAY);
