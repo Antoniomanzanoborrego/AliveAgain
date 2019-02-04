@@ -25,34 +25,34 @@ public class Fantasma extends Group {
     Circle circleFantasma = new Circle(15, 15, 15, Color.DARKGRAY);
     Rectangle rectangleFantasma = new Rectangle (0,15,30,15);
     Polygon polygon1Fantasma = new Polygon (new double[]{
-        0, 30,
+        0, 29,
         0, 35,
-        5, 30
+        5, 29
     });
     Polygon polygon2Fantasma = new Polygon (new double[]{
-        5, 30,
+        5, 29,
         7, 37,
-        9, 30
+        9, 29
     });
     Polygon polygon3Fantasma = new Polygon (new double[]{
-        9, 30,
+        9, 29,
         13, 36,
-        15, 30
+        15, 29
     });
     Polygon polygon4Fantasma = new Polygon (new double[]{
-        15, 30,
+        15, 29,
         18, 35,
-        22, 30
+        22, 29
     });
     Polygon polygon5Fantasma = new Polygon (new double[]{
-        22, 30,
+        22, 29,
         25, 39,
-        27, 30
+        27, 29
     });
     Polygon polygon6Fantasma = new Polygon (new double[]{
-        27, 30,
+        27, 29,
         30, 36,
-        30, 30
+        30, 29
     });
     Group groupFantasma = new Group ();
         

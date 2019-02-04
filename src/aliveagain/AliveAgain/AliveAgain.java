@@ -5,6 +5,7 @@
  */
 package aliveagain.AliveAgain;
 
+import java.io.File;
 import java.util.Random;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -22,59 +23,52 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 /**
  *
  * @author Antonio Manzano Borrego
  */
-public class groupFantasma1X extends Application {
+public class AliveAgain extends Application {
     
 //--------------------Variables usadas al inicio del juego, situadas fuera del start porque el reinicio necesita cambiarlas-----------------
-        int imagenViewWallA = 10;
-        int imagenViewWallA2 = -600;
-        int groupMuñecoX = 512;
-        int velocidad = 0;   
+        
+        //-----------------Constantes--------------------------------------------------------------------------------------------
+        final int ANCHO_MUROS = 200; //mayor que 200
+        final int ANCHO_PANTALLA = 1024; //superior al triple del ANCHO_MURO
+        final int ALTO_PANTALLA = 500; // acabado en 0
+        
+        int groupMuñecoX = (ANCHO_PANTALLA-32)/2;
+        int imagenViewWallA = 0;
+        int imagenViewWallA2 = -ALTO_PANTALLA;
+        int velocidad = 0;
         float velocidadCity = 0;
         double fondoCityY = 0;
         float groupCityX = 0;   
-//        float groupFantasmaY1 = 1200;
-//        float groupFantasmaY2 = 1200;
-//        float groupFantasmaY3 = 1700;
-//        float groupFantasmaY4 = 2200;
-//        float groupFantasmaY5 = 2700;
-//        float groupFantasmaY6 = 3200;
-//        float groupFantasmaY7 = 3700;
-//        float groupFantasmaY8 = 4200;
-//        float groupFantasmaReyY = 900;
-        float dificultad = 8;
+        float dificultadMin = 5;
+        float dificultad = dificultadMin;
+        float dificultadMax = 10;
         int numVidas = 2;
         int marcador;
-//        int groupFantasmaX1;
-//        int groupFantasmaX2;
-//        int groupFantasmaX3;
-//        int groupFantasmaX4;
-//        int groupFantasmaX5;
-//        int groupFantasmaX6;
-//        int groupFantasmaX7;
-//        int groupFantasmaX8;
-//        int groupFantasmaReyX;
-//        int groupFantasmaRebote1X;
-//        int groupFantasmaRebote2X;
-//        int groupFantasmaRebote3X;
-        int groupFantasmaRebote1X2;
-        int groupFantasmaRebote2X2;
-        int groupFantasmaRebote3X2;
+        int groupFantasmaRebote1XInicial;
+        int groupFantasmaRebote2XInicial;
+        int groupFantasmaRebote3XInicial;
         int velocidadRebote1X = 3;
         int velocidadRebote2X = 3;
         int velocidadRebote3X = 3;
-//        float groupFantasmaRebote1Y = 1200;
-//        float groupFantasmaRebote2Y = 1600;
-//        float groupFantasmaRebote3Y = 2100;
+        boolean estarVivo = true;
         
     @Override
     public void start(Stage primaryStage) {
         
-        //-----------------Variables ajenas al reinicio del juego--------------------------------------------------------------------
+//-----------------Implementar musica--------------------------------------------------------------------------------
+        String am = "src\\aliveagain\\AliveAgain\\Music\\AdventureMeme.mp3";
+        Media sound = new Media(new File(am).toURI().toString());
+        MediaPlayer mediaPlayer = new MediaPlayer(sound);
+        mediaPlayer.play();
+        
+//-----------------Variables ajenas al reinicio del juego--------------------------------------------------------------------
         Fantasma fantasma1 = new Fantasma ();                 
         Fantasma fantasma2 = new Fantasma ();                 
         Fantasma fantasma3 = new Fantasma ();                 
@@ -88,11 +82,11 @@ public class groupFantasma1X extends Application {
         Fantasma fantasmaRebote2 = new Fantasma ();
         Fantasma fantasmaRebote3 = new Fantasma ();
         Random randomEnemigosFantasma = new Random();    
-        Rectangle rectangleVida = new Rectangle(0, 0, 200, 75);
+        Rectangle rectangleVida = new Rectangle(0, 0, ANCHO_MUROS, 75);
         
         //-----------------Rectángulos para la colisión del jugador con los laterales-------------------------------------------------------------------
-        Rectangle rectangleDerecha = new Rectangle (200, 600);
-        Rectangle rectangleIzquierda = new Rectangle (824, 0, 200, 600);
+        Rectangle rectangleDerecha = new Rectangle (ANCHO_MUROS, ALTO_PANTALLA);
+        Rectangle rectangleIzquierda = new Rectangle (ANCHO_PANTALLA-ANCHO_MUROS, 0, ANCHO_MUROS, ALTO_PANTALLA);
         
         //-----------------Rectángulo del jugador y visibilidad---------------------------------------------------------------------------------
         Rectangle rectangleBoy = new Rectangle (32, 111);
@@ -117,16 +111,24 @@ public class groupFantasma1X extends Application {
         //-----------------ImagenViews: Posición y tamaño-------------------------------------------------------------------------
         imagenViewCity.setX(0);
         imagenViewCity.setY(0);
-        imagenViewCity.setFitWidth(1024);
-        imagenViewCity.setFitHeight(2400);
+        imagenViewCity.setFitWidth(ANCHO_PANTALLA);
+        imagenViewCity.setFitHeight(4*ALTO_PANTALLA);
         imagenViewWallA_izquierda.setX(0);
         imagenViewWallA_izquierda.setY(0);
-        imagenViewWallA_derecha.setX(824);
+        imagenViewWallA_izquierda.setFitWidth(ANCHO_MUROS);
+        imagenViewWallA_izquierda.setFitHeight(ALTO_PANTALLA + 10);
+        imagenViewWallA_derecha.setX(ANCHO_PANTALLA-ANCHO_MUROS);
         imagenViewWallA_derecha.setY(0);
+        imagenViewWallA_derecha.setFitWidth(ANCHO_MUROS);
+        imagenViewWallA_derecha.setFitHeight(ALTO_PANTALLA + 10);
         imagenViewWallA_izquierda2.setX(0);
         imagenViewWallA_izquierda2.setY(0);
-        imagenViewWallA_derecha2.setX(824);
+        imagenViewWallA_izquierda2.setFitWidth(ANCHO_MUROS);
+        imagenViewWallA_izquierda2.setFitHeight(ALTO_PANTALLA + 10);
+        imagenViewWallA_derecha2.setX(ANCHO_PANTALLA-ANCHO_MUROS);
         imagenViewWallA_derecha2.setY(0);
+        imagenViewWallA_derecha2.setFitWidth(ANCHO_MUROS);
+        imagenViewWallA_derecha2.setFitHeight(ALTO_PANTALLA + 10);
         
         //-----------------Creación y posición de las vidas en un HBox---------------------------------------------------------------------------------------
         HBox cajaVidas = new HBox();
@@ -151,7 +153,7 @@ public class groupFantasma1X extends Application {
         fantasmaRebote1.groupFantasma.getChildren().addAll(fantasmaRebote1);            
         fantasmaRebote2.groupFantasma.getChildren().addAll(fantasmaRebote2);            
         fantasmaRebote3.groupFantasma.getChildren().addAll(fantasmaRebote3);
-            
+        
             fantasmaRey.circleFantasmaD.setFill(Color.BLACK);
             fantasmaRey.circleFantasmaI.setFill(Color.BLACK);
             fantasmaRey.circleFantasma.setFill(Color.AQUAMARINE);
@@ -172,7 +174,7 @@ public class groupFantasma1X extends Application {
             fantasmaRebote1.polygon4Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote1.polygon5Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote1.polygon6Fantasma.setFill(Color.DARKBLUE);
-            fantasmaRebote1.rectangleFantasma.setFill(Color.PURPLE);
+            fantasmaRebote1.rectangleFantasma.setFill(Color.DARKBLUE);
             
             fantasmaRebote2.circleFantasmaD.setFill(Color.DARKBLUE);
             fantasmaRebote2.circleFantasmaI.setFill(Color.DARKBLUE);
@@ -183,7 +185,7 @@ public class groupFantasma1X extends Application {
             fantasmaRebote2.polygon4Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote2.polygon5Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote2.polygon6Fantasma.setFill(Color.DARKBLUE);
-            fantasmaRebote2.rectangleFantasma.setFill(Color.PURPLE);
+            fantasmaRebote2.rectangleFantasma.setFill(Color.DARKBLUE);
             
             fantasmaRebote3.circleFantasmaD.setFill(Color.DARKBLUE);
             fantasmaRebote3.circleFantasmaI.setFill(Color.DARKBLUE);
@@ -194,61 +196,75 @@ public class groupFantasma1X extends Application {
             fantasmaRebote3.polygon4Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote3.polygon5Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote3.polygon6Fantasma.setFill(Color.DARKBLUE);
-            fantasmaRebote3.rectangleFantasma.setFill(Color.PURPLE);
+            fantasmaRebote3.rectangleFantasma.setFill(Color.DARKBLUE);
             
         //-----------------Posición de los grupoFantasmaX-------------------------------------------------------------------------
+        fantasma1.groupFantasmaY = 1200;
         fantasma1.groupFantasma.setLayoutY(fantasma1.groupFantasmaY);
-        fantasma1.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma1.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma1.groupFantasma.setLayoutX(fantasma1.groupFantasmaX);
         
+        fantasma2.groupFantasmaY = 1400;
         fantasma2.groupFantasma.setLayoutY(fantasma2.groupFantasmaY);
-        fantasma2.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma2.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma2.groupFantasma.setLayoutX(fantasma2.groupFantasmaX);
         
+        fantasma3.groupFantasmaY = 1700;
         fantasma3.groupFantasma.setLayoutY(fantasma3.groupFantasmaY);
-        fantasma3.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma3.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma3.groupFantasma.setLayoutX(fantasma3.groupFantasmaX);
         
+        fantasma4.groupFantasmaY = 2200;
         fantasma4.groupFantasma.setLayoutY(fantasma4.groupFantasmaY);
-        fantasma4.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma4.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma4.groupFantasma.setLayoutX(fantasma4.groupFantasmaX);
         
+        fantasma5.groupFantasmaY = 2700;
         fantasma5.groupFantasma.setLayoutY(fantasma5.groupFantasmaY);
-        fantasma5.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma5.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma5.groupFantasma.setLayoutX(fantasma5.groupFantasmaX);
         
+        fantasma6.groupFantasmaY = 3200;
         fantasma6.groupFantasma.setLayoutY(fantasma6.groupFantasmaY);
-        fantasma6.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma6.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma6.groupFantasma.setLayoutX(fantasma6.groupFantasmaX);
         
+        fantasma7.groupFantasmaY = 3700;
         fantasma7.groupFantasma.setLayoutY(fantasma7.groupFantasmaY);
-        fantasma7.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma7.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma7.groupFantasma.setLayoutX(fantasma7.groupFantasmaX);
         
+        fantasma8.groupFantasmaY = 4200;
         fantasma8.groupFantasma.setLayoutY(fantasma8.groupFantasmaY);
-        fantasma8.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasma8.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
         fantasma8.groupFantasma.setLayoutX(fantasma8.groupFantasmaX);
         
+        fantasmaRey.groupFantasmaY = 3000;
         fantasmaRey.groupFantasma.setLayoutY(fantasmaRey.groupFantasmaY);
-        fantasmaRey.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
-        fantasmaRey.groupFantasma.setLayoutX(fantasmaRey.groupFantasmaX);
+        fantasmaRey.groupFantasma.setLayoutX(groupMuñecoX);
         
+        fantasmaRebote1.groupFantasmaY = 2500;
         fantasmaRebote1.groupFantasma.setLayoutY(fantasmaRebote1.groupFantasmaY);
-        fantasmaRebote1.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasmaRebote1.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS + 30;
         fantasmaRebote1.groupFantasma.setLayoutX(fantasmaRebote1.groupFantasmaX);
+        groupFantasmaRebote1XInicial = fantasmaRebote1.groupFantasmaX;
         
+        fantasmaRebote2.groupFantasmaY = 3300;
         fantasmaRebote2.groupFantasma.setLayoutY(fantasmaRebote2.groupFantasmaY);
-        fantasmaRebote2.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasmaRebote2.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS + 30;
         fantasmaRebote2.groupFantasma.setLayoutX(fantasmaRebote2.groupFantasmaX);
+        groupFantasmaRebote2XInicial = fantasmaRebote2.groupFantasmaX;
         
+        fantasmaRebote3.groupFantasmaY = 3900;
         fantasmaRebote3.groupFantasma.setLayoutY(fantasmaRebote3.groupFantasmaY);
-        fantasmaRebote3.groupFantasmaX = randomEnemigosFantasma.nextInt(594) + 200;
+        fantasmaRebote3.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS + 30;
         fantasmaRebote3.groupFantasma.setLayoutX(fantasmaRebote3.groupFantasmaX);
+        groupFantasmaRebote3XInicial = fantasmaRebote3.groupFantasmaX;
         
 //-----------------Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text marcadorText = new Text ("0");
         marcadorText.setFont(Font.font(25));
-        marcadorText.setX(824);
+        marcadorText.setX(ANCHO_PANTALLA-ANCHO_MUROS);
         marcadorText.setY(60);
         marcadorText.setFill(Color.ORANGE);
         
@@ -286,117 +302,117 @@ public class groupFantasma1X extends Application {
                 fantasmaRebote2.groupFantasmaX = fantasmaRebote2.groupFantasmaX + velocidadRebote2X;
                 fantasmaRebote3.groupFantasmaX = fantasmaRebote3.groupFantasmaX + velocidadRebote3X;
                 fantasmaRebote1.groupFantasma.setLayoutX(fantasmaRebote1.groupFantasmaX);
-                fantasmaRebote2.groupFantasma.setLayoutX(fantasmaRebote1.groupFantasmaX);
-                fantasmaRebote1.groupFantasma.setLayoutX(fantasmaRebote1.groupFantasmaX);
+                fantasmaRebote2.groupFantasma.setLayoutX(fantasmaRebote2.groupFantasmaX);
+                fantasmaRebote3.groupFantasma.setLayoutX(fantasmaRebote3.groupFantasmaX);
                 
                 if (fantasma1.groupFantasmaY<-30) {
-                    fantasma1.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma1.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma1.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma1.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma2.groupFantasmaY<-30) {
-                    fantasma2.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma2.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma2.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma2.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma3.groupFantasmaY<-30) {
-                    fantasma3.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma3.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma3.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma3.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma4.groupFantasmaY<-30) {
-                    fantasma4.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma4.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma4.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma4.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma5.groupFantasmaY<-30) {
-                    fantasma5.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma5.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma5.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma5.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma6.groupFantasmaY<-30) {
-                    fantasma6.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma6.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma6.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma6.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma7.groupFantasmaY<-30) {
-                    fantasma7.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma7.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma7.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma7.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasma8.groupFantasmaY<-30) {
-                    fantasma8.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
-                    fantasma8.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(594) + 200);
+                    fantasma8.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasma8.groupFantasma.setLayoutX(randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS);
                     marcador = marcador + 10;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasmaRey.groupFantasmaY<-30) {
-                    fantasmaRey.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1000;
+                    fantasmaRey.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + (ALTO_PANTALLA*2);
                     fantasmaRey.groupFantasma.setLayoutX(groupMuñecoX);
                     marcador = marcador + 25;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasmaRebote1.groupFantasmaY<-30) {
-                    fantasmaRebote1.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1500;
-                    fantasmaRebote1.groupFantasmaX = randomEnemigosFantasma.nextInt(534) + 230;
-                    groupFantasmaRebote1X2 = fantasmaRebote1.groupFantasmaX;
+                    fantasmaRebote1.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasmaRebote1.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS +30;
+                    groupFantasmaRebote1XInicial = fantasmaRebote1.groupFantasmaX;
                     fantasmaRebote1.groupFantasma.setLayoutX(fantasmaRebote1.groupFantasmaX);
                     marcador = marcador + 20;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasmaRebote2.groupFantasmaY<-30) {
-                    fantasmaRebote2.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1500;
-                    fantasmaRebote2.groupFantasmaX = randomEnemigosFantasma.nextInt(534) + 230;
-                    groupFantasmaRebote2X2 = fantasmaRebote2.groupFantasmaX;
+                    fantasmaRebote2.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasmaRebote2.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS +30;
+                    groupFantasmaRebote2XInicial = fantasmaRebote2.groupFantasmaX;
                     fantasmaRebote2.groupFantasma.setLayoutX(fantasmaRebote2.groupFantasmaX);
                     marcador = marcador + 20;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
                 if (fantasmaRebote3.groupFantasmaY<-30) {
-                    fantasmaRebote3.groupFantasmaY = randomEnemigosFantasma.nextInt(400) + 1500;
-                    fantasmaRebote3.groupFantasmaX = randomEnemigosFantasma.nextInt(534) + 230;
-                    groupFantasmaRebote3X2 = fantasmaRebote3.groupFantasmaX;
+                    fantasmaRebote3.groupFantasmaY = randomEnemigosFantasma.nextInt(800) + (ALTO_PANTALLA);
+                    fantasmaRebote3.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS +30;
+                    groupFantasmaRebote3XInicial = fantasmaRebote3.groupFantasmaX;
                     fantasmaRebote3.groupFantasma.setLayoutX(fantasmaRebote3.groupFantasmaX);
                     marcador = marcador + 20;
                     marcadorText.setText(String.valueOf(marcador));
                 }
                 
-                if (fantasmaRebote1.groupFantasmaX>(groupFantasmaRebote1X2+30)) {
+                if (fantasmaRebote1.groupFantasmaX>(groupFantasmaRebote1XInicial+30)) {
                     velocidadRebote1X = -3;
                 }
-                if (fantasmaRebote1.groupFantasmaX<(groupFantasmaRebote1X2-30)) {
+                if (fantasmaRebote1.groupFantasmaX<(groupFantasmaRebote1XInicial-30)) {
                     velocidadRebote1X = 3;
                 }
                 
-                if (fantasmaRebote2.groupFantasmaX>(groupFantasmaRebote2X2+30)) {
+                if (fantasmaRebote2.groupFantasmaX>(groupFantasmaRebote2XInicial+30)) {
                     velocidadRebote2X = -3;
                 }
-                if (fantasmaRebote2.groupFantasmaX<(groupFantasmaRebote2X2-30)) {
+                if (fantasmaRebote2.groupFantasmaX<(groupFantasmaRebote2XInicial-30)) {
                     velocidadRebote2X = 3;
                 }
                 
-                if (fantasmaRebote3.groupFantasmaX>(groupFantasmaRebote3X2+30)) {
+                if (fantasmaRebote3.groupFantasmaX>(groupFantasmaRebote3XInicial+30)) {
                     velocidadRebote3X = -3;
                 }
-                if (fantasmaRebote3.groupFantasmaX<(groupFantasmaRebote3X2-30)) {
+                if (fantasmaRebote3.groupFantasmaX<(groupFantasmaRebote3XInicial-30)) {
                     velocidadRebote3X = 3;
                 }
             };
@@ -408,9 +424,9 @@ public class groupFantasma1X extends Application {
             @Override
             @SuppressWarnings("empty-statement")
             public void handle (long now) {
-                if (fondoCityY>-1440){
+                if (fondoCityY>-ALTO_PANTALLA*2.4){
                     imagenViewCity.setY(fondoCityY);
-                    fondoCityY = fondoCityY - 0.5;
+                    fondoCityY = fondoCityY - 0.4;
                 };
             };
         };
@@ -433,35 +449,41 @@ public class groupFantasma1X extends Application {
             
             @Override
             public void handle (long now) {
-                if (imagenViewWallA_izquierda.getY()<-599){
-                    imagenViewWallA = 610;
+                if (imagenViewWallA_izquierda.getY() == -5){
+                    imagenViewWallA2 = ALTO_PANTALLA;
+                    imagenViewWallA_izquierda2.setY(imagenViewWallA2);
+                    imagenViewWallA_derecha2.setY(imagenViewWallA2); 
+                    imagenViewWallA = imagenViewWallA - 5;
                     imagenViewWallA_izquierda.setY(imagenViewWallA);
-                    imagenViewWallA_derecha.setY(imagenViewWallA);                    
+                    imagenViewWallA_derecha.setY(imagenViewWallA);
                 }
-                else {
+                else{
                     imagenViewWallA = imagenViewWallA - 5;
                     imagenViewWallA_izquierda.setY(imagenViewWallA);
                     imagenViewWallA_derecha.setY(imagenViewWallA);
                 };
-                if (imagenViewWallA_izquierda2.getY()<-599){
-                    imagenViewWallA2 = 610;
+                if (imagenViewWallA_izquierda2.getY() == -5){
+                    imagenViewWallA = ALTO_PANTALLA;
+                    imagenViewWallA_izquierda.setY(imagenViewWallA);
+                    imagenViewWallA_derecha.setY(imagenViewWallA); 
+                    imagenViewWallA2 = imagenViewWallA2 - 5;
                     imagenViewWallA_izquierda2.setY(imagenViewWallA2);
-                    imagenViewWallA_derecha2.setY(imagenViewWallA2); 
+                    imagenViewWallA_derecha2.setY(imagenViewWallA2);
                 }
-                else {
+                else{
                     imagenViewWallA2 = imagenViewWallA2 - 5;
                     imagenViewWallA_izquierda2.setY(imagenViewWallA2);
                     imagenViewWallA_derecha2.setY(imagenViewWallA2);
                 };
             };
-        };        
+        };
         
 //-----------------Animación Dificultad incrementa---------------------------------------------------------------------------------------
         AnimationTimer animationDificultad = new AnimationTimer (){
             
             @Override
             public void handle (long now) {
-                if (dificultad<10){
+                if (dificultad<=dificultadMax){
                     dificultad = (float) (dificultad + 0.0025);
                 }
             };
@@ -473,14 +495,15 @@ public class groupFantasma1X extends Application {
         derrota.setX(100);
         derrota.setY(200);
         derrota.setFill(Color.ORANGE);
+        derrota.setVisible(false);
         
 //-----------------Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text score = new Text ("Puntuación:");
         score.setFont(Font.font(25));
-        score.setX(824);
+        score.setX(ANCHO_PANTALLA-ANCHO_MUROS);
         score.setY(25);
         score.setFill(Color.ORANGE);
-        Rectangle rectangleScore = new Rectangle(824, 0, 200, 75);
+        Rectangle rectangleScore = new Rectangle(ANCHO_PANTALLA-ANCHO_MUROS, 0, ANCHO_MUROS, 75);
         
 //-----------------Escenario (Pane)---------------------------------------------------------------------------------------
         Pane root = new Pane();
@@ -490,310 +513,16 @@ public class groupFantasma1X extends Application {
                     fantasmaRebote1.groupFantasma, fantasmaRebote2.groupFantasma, fantasmaRebote3.groupFantasma,
                     fantasma1.groupFantasma, fantasma2.groupFantasma, fantasma3.groupFantasma, fantasma4.groupFantasma,
                     fantasma5.groupFantasma, fantasma6.groupFantasma, fantasma7.groupFantasma, fantasma8.groupFantasma,
-                    fantasmaRey.groupFantasma, rectangleScore, score, marcadorText);
+                    fantasmaRey.groupFantasma, rectangleScore, score, marcadorText, derrota);
 
-//-----------------Animación choque---------------------------------------------------------------------------------------
-        AnimationTimer animationChoque = new AnimationTimer (){
-            
-            @Override
-            public void handle (long now) {
-                Shape shapeCollision1 = Shape.intersect(rectangleBoy, rectangleDerecha);
-                boolean colisionShape1 = shapeCollision1.getBoundsInLocal().isEmpty();
-                if (colisionShape1 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        groupMuñecoX = 512;
-                    }                
-                };
-                          
-                Shape shapeCollision2 = Shape.intersect(rectangleBoy, rectangleIzquierda);
-                boolean colisionShape2 = shapeCollision2.getBoundsInLocal().isEmpty();
-                if (colisionShape2 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        groupMuñecoX = 512;
-                    }                
-                };
-                         
-                Shape shapeCollision3 = Shape.intersect(rectangleBoy, fantasma1.circleFantasma);
-                boolean colisionShape3 = shapeCollision3.getBoundsInLocal().isEmpty();
-                if (colisionShape3 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma1.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision4 = Shape.intersect(rectangleBoy, fantasma2.circleFantasma);
-                boolean colisionShape4 = shapeCollision4.getBoundsInLocal().isEmpty();
-                if (colisionShape4 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma2.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision5 = Shape.intersect(rectangleBoy, fantasma3.circleFantasma);
-                boolean colisionShape5 = shapeCollision5.getBoundsInLocal().isEmpty();
-                if (colisionShape5 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma3.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision6 = Shape.intersect(rectangleBoy, fantasma4.circleFantasma);
-                boolean colisionShape6 = shapeCollision6.getBoundsInLocal().isEmpty();
-                if (colisionShape6 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma4.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision7 = Shape.intersect(rectangleBoy, fantasma5.circleFantasma);
-                boolean colisionShape7 = shapeCollision7.getBoundsInLocal().isEmpty();
-                if (colisionShape7 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma5.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision8 = Shape.intersect(rectangleBoy, fantasma6.circleFantasma);
-                boolean colisionShape8 = shapeCollision8.getBoundsInLocal().isEmpty();
-                if (colisionShape8 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma6.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision9 = Shape.intersect(rectangleBoy, fantasma7.circleFantasma);
-                boolean colisionShape9 = shapeCollision9.getBoundsInLocal().isEmpty();
-                if (colisionShape9 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma7.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision10 = Shape.intersect(rectangleBoy, fantasma8.circleFantasma);
-                boolean colisionShape10 = shapeCollision10.getBoundsInLocal().isEmpty();
-                if (colisionShape10 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasma8.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision11 = Shape.intersect(rectangleBoy, fantasmaRey.circleFantasma);
-                boolean colisionShape11 = shapeCollision11.getBoundsInLocal().isEmpty();
-                if (colisionShape11 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasmaRey.groupFantasmaY=2000;
-                    }
-                };
-                
-                Shape shapeCollision12 = Shape.intersect(rectangleBoy, fantasmaRebote1.circleFantasma);
-                boolean colisionShape12 = shapeCollision12.getBoundsInLocal().isEmpty();
-                if (colisionShape12 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasmaRebote1.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision13 = Shape.intersect(rectangleBoy, fantasmaRebote2.circleFantasma);
-                boolean colisionShape13 = shapeCollision13.getBoundsInLocal().isEmpty();
-                if (colisionShape13 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasmaRebote2.groupFantasmaY=2000;
-                    }                
-                };
-                
-                Shape shapeCollision14 = Shape.intersect(rectangleBoy, fantasmaRebote3.circleFantasma);
-                boolean colisionShape14 = shapeCollision14.getBoundsInLocal().isEmpty();
-                if (colisionShape14 == false){
-                    if (numVidas == 0){
-                        root.getChildren().add(derrota);
-                        this.stop();
-                        animationDificultad.stop();
-                        animationWall.stop();
-                        animationCity.stop();
-                        animationMuñeco.stop();
-                        animationFantasma.stop();
-                    }
-                    else {
-                        numVidas--;
-                        cajaVidas.getChildren().remove(numVidas);
-                        reinicio();
-                        fantasmaRebote3.groupFantasmaY=2000;
-                    }                
-                };
-            };
-        };
-        
-//-----------------Inicio de animaciones---------------------------------------------------------------------------------------
-        animationDificultad.start();
-        animationChoque.start();
-        animationWall.start();
-        animationCity.start();
-        animationMuñeco.start();
-        animationFantasma.start();
-        
 //-----------------Inicio Escena---------------------------------------------------------------------------------------
-        Scene scene = new Scene(root, 1024, 600);
+        Scene scene = new Scene(root, ANCHO_PANTALLA, ALTO_PANTALLA);
         
-//-----------------Animación Fantasmas---------------------------------------------------------------------------------------
+//-----------------Detección de teclas pulsadas---------------------------------------------------------------------------------------
         scene.setOnKeyReleased((KeyEvent ) -> {
             velocidad = 0;            
         });
+        
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent teclapulsada) {
@@ -805,9 +534,282 @@ public class groupFantasma1X extends Application {
                     case RIGHT:
                         velocidad = 5;
                         break;
+                    case ENTER:
+                        if (!estarVivo){
+                            
+                            reinicio();
+                            groupMuñeco.setLayoutX(groupMuñecoX);
+                            imagenViewCity.setY(fondoCityY);
+                            cajaVidas.getChildren().addAll(imagenViewVida1, imagenViewVida2);
+                            marcadorText.setText(String.valueOf(marcador));
+                            estarVivo = true;
+                        
+                            fantasma1.groupFantasmaY = 1200;
+                            fantasma2.groupFantasmaY = 1400;
+                            fantasma3.groupFantasmaY = 1700;
+                            fantasma4.groupFantasmaY = 2200;
+                            fantasma5.groupFantasmaY = 2700;
+                            fantasma6.groupFantasmaY = 3200;
+                            fantasma7.groupFantasmaY = 3700;
+                            fantasma8.groupFantasmaY = 4200;
+                            fantasmaRey.groupFantasmaY = 3000;
+                            fantasmaRebote1.groupFantasmaY = 2500;
+                            fantasmaRebote2.groupFantasmaY = 3300;
+                            fantasmaRebote3.groupFantasmaY = 3900;
+
+                            fantasma1.groupFantasma.setLayoutY(fantasma1.groupFantasmaY);
+                            fantasma2.groupFantasma.setLayoutY(fantasma2.groupFantasmaY);
+                            fantasma3.groupFantasma.setLayoutY(fantasma3.groupFantasmaY);
+                            fantasma4.groupFantasma.setLayoutY(fantasma4.groupFantasmaY);
+                            fantasma5.groupFantasma.setLayoutY(fantasma5.groupFantasmaY);
+                            fantasma6.groupFantasma.setLayoutY(fantasma6.groupFantasmaY);
+                            fantasma7.groupFantasma.setLayoutY(fantasma7.groupFantasmaY);
+                            fantasma8.groupFantasma.setLayoutY(fantasma8.groupFantasmaY);
+                            fantasmaRey.groupFantasma.setLayoutY(fantasmaRey.groupFantasmaY);
+                            fantasmaRebote1.groupFantasma.setLayoutY(fantasmaRebote1.groupFantasmaY);
+                            fantasmaRebote2.groupFantasma.setLayoutY(fantasmaRebote2.groupFantasmaY);
+                            fantasmaRebote3.groupFantasma.setLayoutY(fantasmaRebote3.groupFantasmaY);                                        
+
+                            fantasmaRebote1.groupFantasma.setLayoutX(fantasmaRebote1.groupFantasmaX);                                        
+                            fantasmaRebote2.groupFantasma.setLayoutX(fantasmaRebote2.groupFantasmaX);
+                            fantasmaRebote3.groupFantasma.setLayoutX(fantasmaRebote3.groupFantasmaX);
+
+                            fantasma1.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma2.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma3.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma4.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma5.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma6.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma7.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasma8.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
+                            fantasmaRebote1.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS + 30;
+                            fantasmaRebote2.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS + 30;
+                            fantasmaRebote3.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS)-90) + ANCHO_MUROS + 30;
+
+                            groupFantasmaRebote1XInicial = fantasmaRebote1.groupFantasmaX;
+                            groupFantasmaRebote2XInicial = fantasmaRebote2.groupFantasmaX;
+                            groupFantasmaRebote3XInicial = fantasmaRebote3.groupFantasmaX;
+
+                            fantasma1.groupFantasma.setLayoutX(fantasma1.groupFantasmaX);
+                            fantasma2.groupFantasma.setLayoutX(fantasma2.groupFantasmaX);
+                            fantasma3.groupFantasma.setLayoutX(fantasma3.groupFantasmaX);
+                            fantasma4.groupFantasma.setLayoutX(fantasma4.groupFantasmaX);
+                            fantasma5.groupFantasma.setLayoutX(fantasma5.groupFantasmaX);
+                            fantasma6.groupFantasma.setLayoutX(fantasma6.groupFantasmaX);
+                            fantasma7.groupFantasma.setLayoutX(fantasma7.groupFantasmaX);
+                            fantasma8.groupFantasma.setLayoutX(fantasma8.groupFantasmaX);
+                            fantasmaRey.groupFantasma.setLayoutX(groupMuñecoX);
+
+                            derrota.setVisible(false);
+                            animationDificultad.start();
+                            animationWall.start();
+                            animationCity.start();
+                            animationMuñeco.start();
+                            animationFantasma.start();
+                            mediaPlayer.play();
+                        }
+                        break;
                 }
             }
         });
+
+//-----------------Animación choque---------------------------------------------------------------------------------------
+        AnimationTimer animationChoque = new AnimationTimer (){
+            
+            @Override
+            public void handle (long now) {
+                Shape shapeCollision1 = Shape.intersect(rectangleBoy, rectangleDerecha);
+                boolean colisionShape1 = shapeCollision1.getBoundsInLocal().isEmpty();
+                if (colisionShape1 == false){
+                    if (numVidas == 0){
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        groupMuñecoX = (ANCHO_PANTALLA-32)/2;
+                    }                
+                };
+                          
+                Shape shapeCollision2 = Shape.intersect(rectangleBoy, rectangleIzquierda);
+                boolean colisionShape2 = shapeCollision2.getBoundsInLocal().isEmpty();
+                if (colisionShape2 == false){
+                    if (numVidas == 0){
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        groupMuñecoX = (ANCHO_PANTALLA-32)/2;
+                    }                
+                };
+                         
+                Shape shapeCollision3 = Shape.intersect(rectangleBoy, fantasma1.circleFantasma);
+                boolean colisionShape3 = shapeCollision3.getBoundsInLocal().isEmpty();
+                if (colisionShape3 == false){
+                    if (numVidas == 0){      
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma1.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision4 = Shape.intersect(rectangleBoy, fantasma2.circleFantasma);
+                boolean colisionShape4 = shapeCollision4.getBoundsInLocal().isEmpty();
+                if (colisionShape4 == false){
+                    if (numVidas == 0){        
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma2.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision5 = Shape.intersect(rectangleBoy, fantasma3.circleFantasma);
+                boolean colisionShape5 = shapeCollision5.getBoundsInLocal().isEmpty();
+                if (colisionShape5 == false){
+                    if (numVidas == 0){      
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma3.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision6 = Shape.intersect(rectangleBoy, fantasma4.circleFantasma);
+                boolean colisionShape6 = shapeCollision6.getBoundsInLocal().isEmpty();
+                if (colisionShape6 == false){
+                    if (numVidas == 0){            
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma4.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision7 = Shape.intersect(rectangleBoy, fantasma5.circleFantasma);
+                boolean colisionShape7 = shapeCollision7.getBoundsInLocal().isEmpty();
+                if (colisionShape7 == false){
+                    if (numVidas == 0){
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma5.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision8 = Shape.intersect(rectangleBoy, fantasma6.circleFantasma);
+                boolean colisionShape8 = shapeCollision8.getBoundsInLocal().isEmpty();
+                if (colisionShape8 == false){
+                    if (numVidas == 0){
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma6.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision9 = Shape.intersect(rectangleBoy, fantasma7.circleFantasma);
+                boolean colisionShape9 = shapeCollision9.getBoundsInLocal().isEmpty();
+                if (colisionShape9 == false){
+                    if (numVidas == 0){            
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma7.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision10 = Shape.intersect(rectangleBoy, fantasma8.circleFantasma);
+                boolean colisionShape10 = shapeCollision10.getBoundsInLocal().isEmpty();
+                if (colisionShape10 == false){
+                    if (numVidas == 0){       
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasma8.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision11 = Shape.intersect(rectangleBoy, fantasmaRey.circleFantasma);
+                boolean colisionShape11 = shapeCollision11.getBoundsInLocal().isEmpty();
+                if (colisionShape11 == false){
+                    if (numVidas == 0){        
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasmaRey.groupFantasmaY=2000;
+                    }
+                };
+                
+                Shape shapeCollision12 = Shape.intersect(rectangleBoy, fantasmaRebote1.circleFantasma);
+                boolean colisionShape12 = shapeCollision12.getBoundsInLocal().isEmpty();
+                if (colisionShape12 == false){
+                    if (numVidas == 0){ 
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasmaRebote1.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision13 = Shape.intersect(rectangleBoy, fantasmaRebote2.circleFantasma);
+                boolean colisionShape13 = shapeCollision13.getBoundsInLocal().isEmpty();
+                if (colisionShape13 == false){
+                    if (numVidas == 0){
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasmaRebote2.groupFantasmaY=2000;
+                    }                
+                };
+                
+                Shape shapeCollision14 = Shape.intersect(rectangleBoy, fantasmaRebote3.circleFantasma);
+                boolean colisionShape14 = shapeCollision14.getBoundsInLocal().isEmpty();
+                if (colisionShape14 == false){
+                    if (numVidas == 0){
+                        reiniciar();
+                    }
+                    else {
+                        vidaMenos();
+                        fantasmaRebote3.groupFantasmaY=2000;
+                    }                
+                };
+            };
+
+            private void reiniciar() {
+                animationDificultad.stop();
+                animationWall.stop();
+                animationCity.stop();
+                animationMuñeco.stop();
+                animationFantasma.stop();
+                mediaPlayer.stop();
+                derrota.setVisible(true);
+                estarVivo = false;}
+
+            private void vidaMenos() {
+                        numVidas--;
+                        cajaVidas.getChildren().remove(numVidas);
+            }
+        };
+        
+//-----------------Inicio de animaciones---------------------------------------------------------------------------------------
+        animationDificultad.start();
+        animationChoque.start();
+        animationWall.start();
+        animationCity.start();
+        animationMuñeco.start();
+        animationFantasma.start();
         
         primaryStage.setTitle("Alive Again");
         primaryStage.setScene(scene);
@@ -822,65 +824,15 @@ public class groupFantasma1X extends Application {
     }
     
     public void reinicio (){    
-//        groupMuñecoX = 512;
+        groupMuñecoX = (ANCHO_PANTALLA-32)/2;
+        imagenViewWallA = 0;
+        imagenViewWallA2 = -ALTO_PANTALLA;
         velocidad = 0;
-        dificultad = 8;
-//        
-//        groupFantasmaY1 = 1200;
-//        groupFantasmaY2 = 1200;
-//        groupFantasmaY3 = 1700;
-//        groupFantasmaY4 = 2200;
-//        groupFantasmaY5 = 2700;
-//        groupFantasmaY6 = 3200;
-//        groupFantasmaY7 = 3700;
-//        groupFantasmaY8 = 4200;
-//        groupFantasmaReyY = 900;
-//        groupFantasmaRebote1Y = 1300;
-//        groupFantasmaRebote2Y = 1700;
-//        groupFantasmaRebote3Y = 2100;
-    }
-    
-    public void restablecer (){   
-        marcador = 0;
-        numVidas = 2;
-        imagenViewWallA = 10;
-        imagenViewWallA2 = -600;
-        groupMuñecoX = 512;
-        velocidad = 0;   
         velocidadCity = 0;
         fondoCityY = 0;
-        groupCityX = 0;   
-//        groupFantasmaY1 = 1200;
-//        groupFantasmaY2 = 1200;
-//        groupFantasmaY3 = 1700;
-//        groupFantasmaY4 = 2200;
-//        groupFantasmaY5 = 2700;
-//        groupFantasmaY6 = 3200;
-//        groupFantasmaY7 = 3700;
-//        groupFantasmaY8 = 4200;
-//        groupFantasmaReyY = 900;
-        dificultad = 8;
+        groupCityX = 0;
+        dificultad = dificultadMin;
         numVidas = 2;
-//        groupFantasmaX1;
-//        groupFantasmaX2;
-//        groupFantasmaX3;
-//        groupFantasmaX4;
-//        groupFantasmaX5;
-//        groupFantasmaX6;
-//        groupFantasmaX7;
-//        groupFantasmaX8;
-//        groupFantasmaReyX;
-//        groupFantasmaRebote1X;
-//        groupFantasmaRebote2X;
-//        groupFantasmaRebote3X;
-//        groupFantasmaRebote1X2;
-//        groupFantasmaRebote2X2;
-//        groupFantasmaRebote3X2;
-        velocidadRebote1X = 3;
-        velocidadRebote2X = 3;
-        velocidadRebote3X = 3;
-//        groupFantasmaRebote1Y = 1200;
-//        groupFantasmaRebote2Y = 1600;
-//        groupFantasmaRebote3Y = 2100;
-    } 
+        marcador = 0;
+    }
 }
