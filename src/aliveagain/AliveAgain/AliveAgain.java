@@ -36,8 +36,8 @@ public class AliveAgain extends Application {
         
         //-----------------Constantes--------------------------------------------------------------------------------------------
         final int ANCHO_MUROS = 200; //mayor que 200
-        final int ANCHO_PANTALLA = 1024; //superior al triple del ANCHO_MURO
-        final int ALTO_PANTALLA = 500; // acabado en 0
+        final int ANCHO_PANTALLA = 1000; //superior al cuatruple del ANCHO_MURO
+        final int ALTO_PANTALLA = 800; // acabado en 0
         
         int groupMuñecoX = (ANCHO_PANTALLA-32)/2;
         int imagenViewWallA = 0;
@@ -46,9 +46,9 @@ public class AliveAgain extends Application {
         float velocidadCity = 0;
         double fondoCityY = 0;
         float groupCityX = 0;   
-        float dificultadMin = 5;
+        float dificultadMin = 6;
         float dificultad = dificultadMin;
-        float dificultadMax = 10;
+        float dificultadMax = 12;
         int numVidas = 2;
         int marcador;
         int groupFantasmaRebote1XInicial;
@@ -63,12 +63,11 @@ public class AliveAgain extends Application {
     public void start(Stage primaryStage) {
         
 //-----------------Implementar musica--------------------------------------------------------------------------------
-        String am = "src\\aliveagain\\AliveAgain\\Music\\AdventureMeme.mp3";
-        Media sound = new Media(new File(am).toURI().toString());
+        Media sound = new Media(new File("src\\aliveagain\\AliveAgain\\Music\\AdventureMeme.mp3").toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
         mediaPlayer.play();
         
-//-----------------Variables ajenas al reinicio del juego--------------------------------------------------------------------
+//-----------------Establecemos variables ajenas al reinicio del juego--------------------------------------------------------------------
         Fantasma fantasma1 = new Fantasma ();                 
         Fantasma fantasma2 = new Fantasma ();                 
         Fantasma fantasma3 = new Fantasma ();                 
@@ -83,22 +82,24 @@ public class AliveAgain extends Application {
         Fantasma fantasmaRebote3 = new Fantasma ();
         Random randomEnemigosFantasma = new Random();    
         Rectangle rectangleVida = new Rectangle(0, 0, ANCHO_MUROS, 75);
+        Rectangle rectangleFinal = new Rectangle(0, 0, ANCHO_PANTALLA, ALTO_PANTALLA);
+        rectangleFinal.setVisible(false);
         
-        //-----------------Rectángulos para la colisión del jugador con los laterales-------------------------------------------------------------------
+        //-----------------Creamos objetos clase rectángulo para la colisión del jugador con los laterales-------------------------------------------------------------------
         Rectangle rectangleDerecha = new Rectangle (ANCHO_MUROS, ALTO_PANTALLA);
         Rectangle rectangleIzquierda = new Rectangle (ANCHO_PANTALLA-ANCHO_MUROS, 0, ANCHO_MUROS, ALTO_PANTALLA);
         
-        //-----------------Rectángulo del jugador y visibilidad---------------------------------------------------------------------------------
+        //-----------------Creamos objetos clase rectángulo del jugador y visibilidad---------------------------------------------------------------------------------
         Rectangle rectangleBoy = new Rectangle (32, 111);
         rectangleBoy.setVisible(false);
         
-        //-----------------Adición de imágenes--------------------------------------------------------------------------------------
+        //-----------------Creamos objetos de clase imagen--------------------------------------------------------------------------------------
         Image imagenBoy = new Image(getClass().getResourceAsStream("Imagen/boy.png"));
         Image imagenWallA = new Image(getClass().getResourceAsStream("Imagen/wall_A.jpg"));
         Image imagenCity = new Image(getClass().getResourceAsStream("Imagen/city.jpg"));
         Image imagenVida = new Image(getClass().getResourceAsStream("Imagen/vida.jpg"));
         
-        //-----------------Creación de ImageViews------------------------------------------------------------------------------------
+        //-----------------Creamos objetos de clase ImageViews------------------------------------------------------------------------------------
         ImageView imagenViewBoy = new ImageView(imagenBoy); 
         ImageView imagenViewWallA_derecha = new ImageView(imagenWallA);
         ImageView imagenViewWallA_izquierda = new ImageView(imagenWallA);
@@ -130,17 +131,17 @@ public class AliveAgain extends Application {
         imagenViewWallA_derecha2.setFitWidth(ANCHO_MUROS);
         imagenViewWallA_derecha2.setFitHeight(ALTO_PANTALLA + 10);
         
-        //-----------------Creación y posición de las vidas en un HBox---------------------------------------------------------------------------------------
+        //-----------------Creación y posición del objeto clase HBox para contener las vidas---------------------------------------------------------------------------------------
         HBox cajaVidas = new HBox();
         cajaVidas.getChildren().addAll(imagenViewVida1, imagenViewVida2);
         
-        //-----------------Creación y posición de grupoMuñeco---------------------------------------------------------------------------------------
+        //-----------------Creación y posición del objeto clase Group grupoMuñeco---------------------------------------------------------------------------------------
         Group groupMuñeco = new Group ();
             groupMuñeco.getChildren().addAll(rectangleBoy, imagenViewBoy);
         groupMuñeco.setLayoutX(groupMuñecoX);
         groupMuñeco.setLayoutY(50);
         
-        //-----------------Creación de los grupoFantasmaX---------------------------------------------------------------------------------------
+        //-----------------Creación de objetos clase Group grupoFantasmaX---------------------------------------------------------------------------------------
         fantasma1.groupFantasma.getChildren().addAll(fantasma1);            
         fantasma2.groupFantasma.getChildren().addAll(fantasma2);            
         fantasma3.groupFantasma.getChildren().addAll(fantasma3);            
@@ -491,7 +492,7 @@ public class AliveAgain extends Application {
         
 //-----------------Texto Derrota: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text derrota = new Text ("Fin de la Partida");
-        derrota.setFont(Font.font(120));
+        derrota.setFont(Font.font(ANCHO_PANTALLA/10));
         derrota.setX(100);
         derrota.setY(200);
         derrota.setFill(Color.ORANGE);
@@ -504,6 +505,14 @@ public class AliveAgain extends Application {
         score.setY(25);
         score.setFill(Color.ORANGE);
         Rectangle rectangleScore = new Rectangle(ANCHO_PANTALLA-ANCHO_MUROS, 0, ANCHO_MUROS, 75);
+
+//-----------------Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
+        Text pressEnter = new Text ("Press Enter to retry");
+        pressEnter.setFont(Font.font(ANCHO_PANTALLA/20));
+        pressEnter.setX(20);
+        pressEnter.setY(50);
+        pressEnter.setFill(Color.GREEN);
+        pressEnter.setVisible(false);
         
 //-----------------Escenario (Pane)---------------------------------------------------------------------------------------
         Pane root = new Pane();
@@ -513,7 +522,7 @@ public class AliveAgain extends Application {
                     fantasmaRebote1.groupFantasma, fantasmaRebote2.groupFantasma, fantasmaRebote3.groupFantasma,
                     fantasma1.groupFantasma, fantasma2.groupFantasma, fantasma3.groupFantasma, fantasma4.groupFantasma,
                     fantasma5.groupFantasma, fantasma6.groupFantasma, fantasma7.groupFantasma, fantasma8.groupFantasma,
-                    fantasmaRey.groupFantasma, rectangleScore, score, marcadorText, derrota);
+                    fantasmaRey.groupFantasma, rectangleScore, rectangleFinal, score, marcadorText, derrota, pressEnter);
 
 //-----------------Inicio Escena---------------------------------------------------------------------------------------
         Scene scene = new Scene(root, ANCHO_PANTALLA, ALTO_PANTALLA);
@@ -543,6 +552,15 @@ public class AliveAgain extends Application {
                             cajaVidas.getChildren().addAll(imagenViewVida1, imagenViewVida2);
                             marcadorText.setText(String.valueOf(marcador));
                             estarVivo = true;
+                            score.setFont(Font.font(25));
+                            score.setX(ANCHO_PANTALLA-ANCHO_MUROS);
+                            score.setY(25);
+                            marcadorText.setFont(Font.font(25));
+                            marcadorText.setX(ANCHO_PANTALLA-ANCHO_MUROS);
+                            marcadorText.setY(60);
+                            rectangleFinal.setVisible(false);
+                            pressEnter.setVisible(false);
+                            derrota.setVisible(false);
                         
                             fantasma1.groupFantasmaY = 1200;
                             fantasma2.groupFantasmaY = 1400;
@@ -795,7 +813,17 @@ public class AliveAgain extends Application {
                 animationFantasma.stop();
                 mediaPlayer.stop();
                 derrota.setVisible(true);
-                estarVivo = false;}
+                estarVivo = false;
+                score.setFont(Font.font(ANCHO_PANTALLA/15));
+                score.setX(ANCHO_PANTALLA/4);
+                score.setY(ALTO_PANTALLA/2);
+                marcadorText.setFont(Font.font(ANCHO_PANTALLA/15));
+                marcadorText.setX(ANCHO_PANTALLA*3/4);
+                marcadorText.setY(ALTO_PANTALLA/2);
+                rectangleFinal.setVisible(true);
+                pressEnter.setVisible(true);
+                derrota.setVisible(true);
+            }
 
             private void vidaMenos() {
                         numVidas--;
