@@ -24,6 +24,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
+import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
 
 /**
@@ -46,9 +47,9 @@ public class AliveAgain extends Application {
         float velocidadCity = 0;
         double fondoCityY = 0;
         float groupCityX = 0;   
-        float dificultadMin = 6;
+        float dificultadMin = 7;
         float dificultad = dificultadMin;
-        float dificultadMax = 12;
+        float dificultadMax = 10;
         int numVidas = 2;
         int marcador;
         int groupFantasmaRebote1XInicial;
@@ -58,6 +59,7 @@ public class AliveAgain extends Application {
         int velocidadRebote2X = 3;
         int velocidadRebote3X = 3;
         boolean estarVivo = true;
+        boolean sonido = true;        
         
     @Override
     public void start(Stage primaryStage) {
@@ -65,7 +67,12 @@ public class AliveAgain extends Application {
 //-----------------Implementar musica--------------------------------------------------------------------------------
         Media sound = new Media(new File("src\\aliveagain\\AliveAgain\\Music\\AdventureMeme.mp3").toURI().toString());
         MediaPlayer mediaPlayer = new MediaPlayer(sound);
-        mediaPlayer.play();
+        try {
+            mediaPlayer.play();
+            } catch(MediaException e) {
+                System.out.println("No hay sonido");
+                sonido = false;
+            } 
         
 //-----------------Establecemos variables ajenas al reinicio del juego--------------------------------------------------------------------
         Fantasma fantasma1 = new Fantasma ();                 
@@ -199,7 +206,7 @@ public class AliveAgain extends Application {
             fantasmaRebote3.polygon6Fantasma.setFill(Color.DARKBLUE);
             fantasmaRebote3.rectangleFantasma.setFill(Color.DARKBLUE);
             
-        //-----------------Posición de los grupoFantasmaX-------------------------------------------------------------------------
+        //-----------------Estableciendo posición de los grupoFantasmaX-------------------------------------------------------------------------
         fantasma1.groupFantasmaY = 1200;
         fantasma1.groupFantasma.setLayoutY(fantasma1.groupFantasmaY);
         fantasma1.groupFantasmaX = randomEnemigosFantasma.nextInt(ANCHO_PANTALLA-(2*ANCHO_MUROS) - 30) + ANCHO_MUROS;
@@ -262,14 +269,14 @@ public class AliveAgain extends Application {
         fantasmaRebote3.groupFantasma.setLayoutX(fantasmaRebote3.groupFantasmaX);
         groupFantasmaRebote3XInicial = fantasmaRebote3.groupFantasmaX;
         
-//-----------------Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text marcadorText = new Text ("0");
         marcadorText.setFont(Font.font(25));
         marcadorText.setX(ANCHO_PANTALLA-ANCHO_MUROS);
         marcadorText.setY(60);
         marcadorText.setFill(Color.ORANGE);
         
-//-----------------Animación Fantasmas---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Animación Fantasmas---------------------------------------------------------------------------------------
         AnimationTimer animationFantasma = new AnimationTimer (){
         
             @Override
@@ -419,7 +426,7 @@ public class AliveAgain extends Application {
             };
         };
         
-//-----------------Animación Ciudad---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Animación Ciudad---------------------------------------------------------------------------------------
         AnimationTimer animationCity = new AnimationTimer (){
             
             @Override
@@ -432,7 +439,7 @@ public class AliveAgain extends Application {
             };
         };
         
-//-----------------Animación Muñeco---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Animación Muñeco---------------------------------------------------------------------------------------
         AnimationTimer animationMuñeco = new AnimationTimer (){
             
             @Override
@@ -445,7 +452,7 @@ public class AliveAgain extends Application {
             };
         };
         
-//-----------------Animación Muros---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Animación Muros---------------------------------------------------------------------------------------
         AnimationTimer animationWall = new AnimationTimer (){
             
             @Override
@@ -479,7 +486,7 @@ public class AliveAgain extends Application {
             };
         };
         
-//-----------------Animación Dificultad incrementa---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Animación Dificultad (incremento automatico)---------------------------------------------------------------------------------------
         AnimationTimer animationDificultad = new AnimationTimer (){
             
             @Override
@@ -490,7 +497,7 @@ public class AliveAgain extends Application {
             };
         };
         
-//-----------------Texto Derrota: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Texto Derrota: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text derrota = new Text ("Fin de la Partida");
         derrota.setFont(Font.font(ANCHO_PANTALLA/10));
         derrota.setX(100);
@@ -498,7 +505,7 @@ public class AliveAgain extends Application {
         derrota.setFill(Color.ORANGE);
         derrota.setVisible(false);
         
-//-----------------Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text score = new Text ("Puntuación:");
         score.setFont(Font.font(25));
         score.setX(ANCHO_PANTALLA-ANCHO_MUROS);
@@ -506,7 +513,7 @@ public class AliveAgain extends Application {
         score.setFill(Color.ORANGE);
         Rectangle rectangleScore = new Rectangle(ANCHO_PANTALLA-ANCHO_MUROS, 0, ANCHO_MUROS, 75);
 
-//-----------------Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Texto Puntuación: Creación, posición, fuente (...)---------------------------------------------------------------------------------------
         Text pressEnter = new Text ("Press Enter to retry");
         pressEnter.setFont(Font.font(ANCHO_PANTALLA/20));
         pressEnter.setX(20);
@@ -514,7 +521,7 @@ public class AliveAgain extends Application {
         pressEnter.setFill(Color.GREEN);
         pressEnter.setVisible(false);
         
-//-----------------Escenario (Pane)---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Pane (Escenario)---------------------------------------------------------------------------------------
         Pane root = new Pane();
             root.getChildren().addAll(imagenViewCity, imagenViewWallA_derecha, 
                     imagenViewWallA_izquierda, imagenViewWallA_derecha2, 
@@ -524,7 +531,7 @@ public class AliveAgain extends Application {
                     fantasma5.groupFantasma, fantasma6.groupFantasma, fantasma7.groupFantasma, fantasma8.groupFantasma,
                     fantasmaRey.groupFantasma, rectangleScore, rectangleFinal, score, marcadorText, derrota, pressEnter);
 
-//-----------------Inicio Escena---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Escena Inicio---------------------------------------------------------------------------------------
         Scene scene = new Scene(root, ANCHO_PANTALLA, ALTO_PANTALLA);
         
 //-----------------Detección de teclas pulsadas---------------------------------------------------------------------------------------
@@ -624,14 +631,16 @@ public class AliveAgain extends Application {
                             animationCity.start();
                             animationMuñeco.start();
                             animationFantasma.start();
-                            mediaPlayer.play();
+                            if (sonido){
+                                mediaPlayer.play();
+                            }
                         }
                         break;
                 }
             }
         });
 
-//-----------------Animación choque---------------------------------------------------------------------------------------
+//-----------------Nuevo objeto clase Animación choque---------------------------------------------------------------------------------------
         AnimationTimer animationChoque = new AnimationTimer (){
             
             @Override
@@ -811,7 +820,9 @@ public class AliveAgain extends Application {
                 animationCity.stop();
                 animationMuñeco.stop();
                 animationFantasma.stop();
-                mediaPlayer.stop();
+                if (sonido){
+                    mediaPlayer.stop();
+                };
                 derrota.setVisible(true);
                 estarVivo = false;
                 score.setFont(Font.font(ANCHO_PANTALLA/15));
